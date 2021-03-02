@@ -17,21 +17,21 @@ usersRouter.post('/', async (request, response) => {
 
   const createUser = new CreateUserService();
 
-  const user = await createUser.execute({
+  const userData = await createUser.execute({
     name,
     email,
     password,
   });
 
-  const userWithoutPassword = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    created_at: user.created_at,
-    updated_at: user.updated_at,
+  const user = {
+    id: userData.id,
+    name: userData.name,
+    email: userData.email,
+    created_at: userData.created_at,
+    updated_at: userData.updated_at,
   };
 
-  return response.json(userWithoutPassword);
+  return response.json(user);
 });
 
 usersRouter.patch(
