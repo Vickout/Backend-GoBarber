@@ -34,22 +34,47 @@ describe('AuthenticateUser', () => {
     expect(response.userData).toEqual(user);
   });
 
-  //   it('should be able to create a new user with same email from another', async () => {
-  //     const fakeUsersRepository = new FakeUsersRepostiory();
-  //     const AuthenticateUser = new AuthenticateUserService(fakeUsersRepository);
+  it('should not be able to authenticate with non existing user', async () => {
+    const fakeUsersRepository = new FakeUsersRepostiory();
+    const fakeHashProvider = new FakeHashProvider();
 
-  //     await AuthenticateUser.execute({
-  //       name: 'Santos Dumont',
-  //       email: 'asd@aeronauta.com',
-  //       password: '14-bis',
-  //     });
+    const authenticateUser = new AuthenticateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
 
-  //     expect(
-  //       AuthenticateUser.execute({
-  //         name: 'Santos Dumont',
-  //         email: 'asd@aeronauta.com',
-  //         password: '14-bis',
-  //       }),
-  //     ).rejects.toBeInstanceOf(AppError);
-  //   });
+    expect(
+      authenticateUser.execute({
+        email: 'asd@aeronauta.com',
+        password: '14-bis',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to authenticate with wrong password', async () => {
+    const fakeUsersRepository = new FakeUsersRepostiory();
+    const fakeHashProvider = new FakeHashProvider();
+
+    const createUser = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
+    const authenticateUser = new AuthenticateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
+
+    await createUser.execute({
+      name: 'Santos Dumont',
+      email: 'asd@aeronauta.com',
+      password: '14-bis',
+    });
+
+    expect(
+      authenticateUser.execute({
+        email: 'asd@aeronauta.com',
+        password: 'wrong-password',
+      }),
+    ).rejects.toBeInstanceOf(AppError);
+  });
 });
