@@ -27,8 +27,7 @@ class S3StorageProvider implements IStorageProvider {
         ACL: 'private', // lembrar de entender essas permissões
         Body: fileContent,
       })
-      .promise()
-      .catch(err => console.log(err));
+      .promise();
 
     await fs.promises.unlink(originalPath);
 
@@ -41,8 +40,7 @@ class S3StorageProvider implements IStorageProvider {
         Bucket: uplaodConfig.config.aws.bucket,
         Key: file,
       })
-      .promise()
-      .catch(err => console.log(err));
+      .promise();
   }
 }
 
